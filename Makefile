@@ -6,7 +6,7 @@
 #    By: yachen <yachen@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/08/13 10:56:05 by yachen            #+#    #+#              #
-#    Updated: 2023/09/13 14:28:15 by yachen           ###   ########.fr        #
+#    Updated: 2023/09/15 10:24:26 by yachen           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@ NAME = philosophers
 
 NAME_B = philo_bonus
 
-CC = gcc
+CC = cc
 
 CFLAGS =  -Wall -Wextra -Werror -g
 
