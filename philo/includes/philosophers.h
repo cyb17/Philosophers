@@ -6,7 +6,7 @@
 /*   By: yachen <yachen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/12 13:25:53 by yachen            #+#    #+#             */
-/*   Updated: 2023/09/15 16:17:59 by yachen           ###   ########.fr       */
+/*   Updated: 2023/09/16 13:39:05 by yachen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,26 +15,29 @@
 
 # include <stdio.h>
 # include <stdlib.h>
+# include <unistd.h>
+# include <string.h>
 # include <pthread.h>
+# include <sys/time.h>
 
 //# define NB_MAX_PROCESS 30872
 
-typedef struct s_thread
+typedef struct s_table
 {
-	pthread_t	thread;
-	int			fork;
-	void		*ptr_fork;
-}				t_thread;
+	pthread_t		*thread;
+	pthread_mutex_t	*mutex;
+	int				*fork;
+}				t_table;
 
 typedef struct s_data
 {
-	int				nb_of_philo;
-	int				time_to_die;
-	int				time_to_eat;
-	int				time_to_sleep;
+	int				nb_philo;
+	int				time_die;
+	int				time_eat;
+	int				time_sleep;
 	int				nb_time_musteat;
-	pthread_mutex_t	mutex;
-	t_thread		*thread;
+	int				i;
+	t_table			table;
 }				t_data;
 
 int philo_ft_atoi(char *str);
