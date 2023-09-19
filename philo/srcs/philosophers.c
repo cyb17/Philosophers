@@ -5,84 +5,12 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: yachen <yachen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/09/13 13:29:01 by yachen            #+#    #+#             */
-/*   Updated: 2023/09/16 14:35:25 by yachen           ###   ########.fr       */
+/*   Created: 2023/09/19 13:39:35 by yachen            #+#    #+#             */
+/*   Updated: 2023/09/19 17:05:42 by yachen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/philosophers.h"
-
-static void	timestamp(void)
-{
-	struct timeval time;
-	long long time_ms;
-	
-	gettimeofday(&time, NULL);
-	time_ms = time.tv_sec / 1000;
-	printf("%lld ", time_ms);
-}
-
-static void	take_l_then_r(t_data *data, int *left_fork, int *right_fork)
-{
-	pthread_mutex_lock(&data->table.mutex[*left_fork]);
-	timestamp();
-	printf("%d has taken a fork\n", data->i);
-	pthread_mutex_lock(&data->table.mutex[*right_fork]);
-	timestamp();
-	printf("%d has taken a fork\n", data->i);
-	timestamp();
-	printf("%d is eating\n", data->i);
-	usleep(data->time_eat);
-	pthread_mutex_unlock(&data->table.mutex[*right_fork]);
-	pthread_mutex_unlock(&data->table.mutex[*left_fork]);
-}
-
-static void	take_r_then_l(t_data *data, int *left_fork, int *right_fork)
-{
-	pthread_mutex_lock(&data->table.mutex[*right_fork]);
-	timestamp();
-	printf("%d has taken a fork\n", data->i);
-	pthread_mutex_lock(&data->table.mutex[*left_fork]);
-	timestamp();
-	printf("%d has taken a fork\n", data->i);
-	timestamp();
-	printf("%d is eating\n", data->i);
-	usleep(data->time_eat);
-	pthread_mutex_unlock(&data->table.mutex[*left_fork]);
-	pthread_mutex_unlock(&data->table.mutex[*right_fork]);
-}
-
-static void	*routine(void *tmp)
-{
-	int		left_fork;
-	int		right_fork;
-	t_data	*data;
-	
-	data = NULL;
-	data = (t_data *)tmp;
-	left_fork = data->i + 1;
-	right_fork = data->i;
-	if (right_fork == data->nb_philo - 1)
-		left_fork = 0;
-	if (data->i % 2 != 0)
-		take_l_then_r(data, &left_fork, &right_fork);
-	else
-		take_r_then_l(data, &left_fork, &right_fork);
-	return (NULL);
-}
-
-static void	init_table(t_table *tb, int nb_philo)
-{
-	int	i;
-
-	i = 0;
-	tb->thread = (pthread_t *)malloc(sizeof(pthread_t) * nb_philo);
-	tb->mutex = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t) *nb_philo);
-	while (i < nb_philo)
-		pthread_mutex_init(&tb->mutex[i++], NULL);
-	tb->fork = (int *)malloc(sizeof(int) * nb_philo);
-	memset(tb->fork, 0, nb_philo);
-}
 
 static void	init_data(t_data *data, char **argv)
 {
@@ -94,37 +22,166 @@ static void	init_data(t_data *data, char **argv)
 		data->nb_time_musteat = philo_ft_atoi(argv[5]);
 	else
 		data->nb_time_musteat = 0;
-	data->i = 0;
-	init_table(&data->table, data->nb_philo);
 }
-static void	destroy_table(t_data *data)
-{
-	int	j;
 
-	j = 0;
-	while (j < data->nb_philo)
+static t_philo	*init_philo(char **argv)
+{
+	int	i;
+	int	nb_philo;
+	t_philo	*philo;
+
+	i = 0;
+	nb_philo = philo_ft_atoi(argv[1]);
+	philo = (t_philo *)malloc(sizeof(t_philo) * nb_philo);
+	if (!philo)
+		return (NULL);
+	while (i < nb_philo)
 	{
-		pthread_detach(data->table.thread[j]);
-		pthread_mutex_destroy(&data->table.mutex[j]);
-		j++;
+		init_data(&philo[i].data, argv);
+		philo[i].philo_id = i + 1;
+		philo[i].thread = 0;
+		if (pthread_mutex_init(&philo[i].mutex, NULL) != 0)
+		{
+			while (--i >= 0)
+				pthread_mutex_destroy(&philo[i].mutex);
+			return (NULL);
+		}
+		philo[i].fork = 0;
+		philo[i].time_eaten = 0;
+		i++;
 	}
-	free(data->table.thread);
-	free(data->table.mutex);
-	free(data->table.fork);
+	return (philo);
+}
+static void	clean_all(t_philo *philo, size_t indice)
+{
+	size_t	i;
+
+	i = 0;
+	while (i < philo->data.nb_philo)
+	{
+		if (i < indice)
+			pthread_join(philo[i].thread, NULL);
+		pthread_mutex_destroy(&philo[i].mutex);
+		i++;
+	}
+	free(philo);
+}
+static int	test_fork_dispo(t_philo *philo)
+{
+	if (philo->fork == 0 && philo[1].fork == 0)
+		return (0);
+	else
+		return (-1);
+}
+
+static void	*take_l_then_r(void *arg)
+{
+	t_philo *philo;
+	int		flag;
+	
+	flag = 0;
+	philo = (t_philo *)arg;
+	while (test_fork_dispo(philo) == -1)
+	{
+		if (flag == 0)
+		{
+			get_timestamp();
+			printf("%zu is thinking\n", philo->philo_id);
+			flag = 1;
+		}
+		test_fork_dispo(philo);
+	}
+	pthread_mutex_lock(&philo->mutex);
+	philo->fork = 1;
+	philo[1].fork = 1;
+	get_timestamp();
+	printf("%zu has taken a fork\n", philo->philo_id);
+	pthread_mutex_lock(&philo[1].mutex);
+	get_timestamp();
+	printf("%zu has taken a fork\n", philo->philo_id);
+	get_timestamp();
+	printf("%zu is eating\n", philo->philo_id);
+	usleep(philo->data.time_eat);
+	philo->fork = 0;
+	philo[1].fork = 0;
+	get_timestamp();
+	printf("%zu is sleeping\n", philo->philo_id);
+	pthread_mutex_unlock(&philo[1].mutex);
+	pthread_mutex_unlock(&philo->mutex);
+	return (NULL);
+}
+
+static void	*take_r_then_l(void *arg)
+{
+	t_philo *philo;
+	int		flag;
+	
+	flag = 0;
+	philo = (t_philo *)arg;
+	while (test_fork_dispo(philo) == -1)
+	{
+		if (flag == 0)
+		{
+			get_timestamp();
+			printf("%zu is thinking\n", philo->philo_id);
+			flag = 1;
+		}
+		test_fork_dispo(philo);
+	}
+	pthread_mutex_lock(&philo[1].mutex);
+	philo->fork = 1;
+	philo[1].fork = 1;
+	get_timestamp();
+	printf("%zu has taken a fork\n", philo->philo_id);
+	pthread_mutex_lock(&philo->mutex);
+	get_timestamp();
+	printf("%zu has taken a fork\n", philo->philo_id);
+	get_timestamp();
+	printf("%zu is eating\n", philo->philo_id);
+	usleep(philo->data.time_eat);
+	philo->fork = 0;
+	philo[1].fork = 0;
+	get_timestamp();
+	printf("%zu is sleeping\n", philo->philo_id);
+	pthread_mutex_unlock(&philo->mutex);
+	pthread_mutex_unlock(&philo[1].mutex);
+	return (NULL);
+}
+
+static int	create_thread(pthread_t *thread, size_t i, t_philo *philo)
+{
+	int	err;
+
+	err = 0;
+	if ((i + 1) % 2 != 0)
+		err = pthread_create(thread, NULL, &take_l_then_r, philo);
+	else
+		err = pthread_create(thread, NULL, &take_r_then_l, philo);
+	if (err != 0)
+		return (-1);
+	return (0);
 }
 
 int	main(int argc, char  **argv)
 {
-	t_data			data;
+	t_philo	*philo;
+	size_t		i;
 	
-	if (arguments_parsing(argc, argv) == 0)
-		return (0);
-	init_data(&data, argv);
-	while (data.i < data.nb_philo)
-		pthread_create(&data.table.thread[data.i++], NULL, &routine, &data);
-	int	j = 0;
-	while (j < data.nb_philo)
-		pthread_join(data.table.thread[j++], NULL);
-	destroy_table(&data);
+	if (arguments_parsing(argc, argv) == -1)
+		return (1);
+	philo = init_philo(argv);
+	if (!philo)
+		return (1);
+	i = 0;
+	while (i < philo->data.nb_philo)
+	{
+		if (create_thread(&philo[i].thread, i, &philo[i]) == -1)
+		{
+			clean_all(philo, i);
+			return (1);
+		}
+		i++;
+	}
+	clean_all(philo, i);
 	return (0);
 }
