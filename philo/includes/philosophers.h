@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philosophers2.h                                    :+:      :+:    :+:   */
+/*   philosophers.h                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yachen <yachen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/19 13:37:00 by yachen            #+#    #+#             */
-/*   Updated: 2023/09/19 14:29:57 by yachen           ###   ########.fr       */
+/*   Updated: 2023/09/20 14:11:31 by yachen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,22 +21,23 @@
 # include <sys/time.h>
 
 typedef struct s_data
-{
-	size_t				nb_philo;
+{	
+	int					nb_philo;
 	size_t				time_die;
 	size_t				time_eat;
 	size_t				time_sleep;
-	size_t				nb_time_musteat;
+	int					nb_time_musteat;
+	pthread_mutex_t		write_lock;
 }				t_data;
 
 typedef struct s_philo
 {
-	t_data				data;
-	size_t				philo_id;
+	t_data				*data;
+	int				philo_id;
 	pthread_t			thread;
 	pthread_mutex_t		mutex;
-	size_t				fork;
-	size_t				time_eaten;
+	int				fork;
+	int				time_eaten;
 }				t_philo;
 
 int 	philo_ft_atoi(char *str);
