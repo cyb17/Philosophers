@@ -6,7 +6,7 @@
 /*   By: yachen <yachen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/19 13:39:35 by yachen            #+#    #+#             */
-/*   Updated: 2023/09/20 14:12:34 by yachen           ###   ########.fr       */
+/*   Updated: 2023/09/21 14:43:38 by yachen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ static int	init_philo(t_philo **philo, t_data *data, char **argv)
 	*philo = (t_philo *)malloc(sizeof(t_philo) * data->nb_philo);
 	if (!(*philo))
 		return (-1);
-	while (i < (int)data->nb_philo)
+	while (i < data->nb_philo)
 	{
 		(*philo)[i].data = data;
 		(*philo)[i].philo_id = i + 1;
@@ -73,18 +73,18 @@ static void	clean_all(t_philo *philo, int indice)
 	free(philo);
 }
 
-static void	print_msg(char indice, size_t philo_id, pthread_mutex_t *write_lock)
+static void	print_msg(char indice, int philo_id, pthread_mutex_t *write_lock)
 {
 	pthread_mutex_lock(write_lock);
 	get_timestamp();
 	if (indice == 'f')
-		printf("%zu has taken a fork\n", philo_id);
+		printf("%s%d%s %shas taken a fork%s\n", WHE, philo_id, DEF, YEW, DEF);
 	else if (indice == 'e')
-		printf("%zu is eating\n", philo_id);
+		printf("%s%d%s %sis eating%s\n", WHE, philo_id, DEF, GRN, DEF);
 	else if (indice == 's')
-		printf("%zu is sleeping\n", philo_id);
+		printf("%s%d%s %sis sleeping%s\n", WHE, philo_id, DEF, CYN_F, DEF);
 	else if (indice == 't')
-		printf("%zu is thinking\n", philo_id);
+		printf("%s%d%s %sis thinking%s\n", WHE, philo_id, DEF, MAA, DEF);
 	pthread_mutex_unlock(write_lock);
 }
 static int	test(t_philo *philo)
@@ -154,7 +154,7 @@ static void	*take_r_then_l(void *arg)
 	return (NULL);
 }
 
-static int	create_thread(int i, t_philo *philo, t_philo last_philo[])
+static int	create_thread(int i, t_philo *philo, t_philo *last_philo)
 {
 	int	err;
 
@@ -162,14 +162,14 @@ static int	create_thread(int i, t_philo *philo, t_philo last_philo[])
 	if ((i + 1) % 2 != 0)
 	{
 		if (i + 1 == philo->data->nb_philo)
-			err = pthread_create(&philo[i].thread, NULL, &take_l_then_r, &last_philo);
+			err = pthread_create(&philo[i].thread, NULL, &take_l_then_r, last_philo);
 		else
 			err = pthread_create(&philo[i].thread, NULL, &take_l_then_r, &philo[i]);
 	}
 	else
 	{
 		if (i + 1 == philo->data->nb_philo)
-			err = pthread_create(&philo[i].thread, NULL, &take_r_then_l, &last_philo);
+			err = pthread_create(&philo[i].thread, NULL, &take_r_then_l, last_philo);
 		else
 			err = pthread_create(&philo[i].thread, NULL, &take_r_then_l, &philo[i]);
 	}

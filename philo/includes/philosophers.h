@@ -6,7 +6,7 @@
 /*   By: yachen <yachen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/19 13:37:00 by yachen            #+#    #+#             */
-/*   Updated: 2023/09/20 14:11:31 by yachen           ###   ########.fr       */
+/*   Updated: 2023/09/21 14:39:54 by yachen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,16 @@
 # include <string.h>
 # include <pthread.h>
 # include <sys/time.h>
+
+# define DEF "\e[0m"
+# define RED "\e[91m"
+# define GRN "\e[92m"
+# define YEW "\e[93m"
+# define WHE "\e[97m"
+# define CYN "\e[96m"
+# define CYN_F "\e[36;1m"
+# define MAA_F "\e[35;1m"
+# define MAA "\e[95;1m"
 
 typedef struct s_data
 {	
@@ -33,11 +43,11 @@ typedef struct s_data
 typedef struct s_philo
 {
 	t_data				*data;
-	int				philo_id;
+	int					philo_id;
 	pthread_t			thread;
 	pthread_mutex_t		mutex;
-	int				fork;
-	int				time_eaten;
+	int					fork;
+	int					time_eaten;
 }				t_philo;
 
 int 	philo_ft_atoi(char *str);
