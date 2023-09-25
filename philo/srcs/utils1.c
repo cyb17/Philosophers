@@ -6,20 +6,47 @@
 /*   By: yachen <yachen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/13 14:13:35 by yachen            #+#    #+#             */
-/*   Updated: 2023/09/21 14:21:43 by yachen           ###   ########.fr       */
+/*   Updated: 2023/09/25 16:54:04 by yachen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include  "../includes/philosophers.h"
 
-/* convert current timestamp (seconds to milliseconds)
-and print it. */
-void	get_timestamp(void)
+int philo_ft_atoi(char *str)
 {
-	struct timeval time;
-	long long time_ms;
-	
-	gettimeofday(&time, NULL);
-	time_ms = (time.tv_sec * 1000) + (time.tv_usec / 1000);
-	printf("%lld ", time_ms);
+	int		i;
+	int		nb;
+
+	i = 0;
+	nb = 0;
+	while (str[i] && (str[i] == ' ' || ((str[i] > 8 && str[i] < 14))))
+		i++;
+	while (str[i] <= '9' && str[i] >= '0')
+	{
+		nb = nb * 10 + (str[i] - '0');
+		i++;
+	}
+	return (nb);
+}
+
+// Gets the current time in milliseconds
+
+size_t	get_current_time(void)
+{
+	struct timeval	time;
+
+	if (gettimeofday(&time, NULL) == -1)
+		write(2, "gettimeofday() error\n", 22);
+	return (time.tv_sec * 1000 + time.tv_usec / 1000);
+}
+
+// Improved version of sleep function
+int	ft_usleep(size_t milliseconds)
+{
+	size_t	start;
+
+	start = get_current_time();
+	while ((get_current_time() - start) < milliseconds)
+		usleep(500);
+	return (0);
 }

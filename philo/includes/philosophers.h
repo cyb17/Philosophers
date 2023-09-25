@@ -6,7 +6,7 @@
 /*   By: yachen <yachen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/19 13:37:00 by yachen            #+#    #+#             */
-/*   Updated: 2023/09/21 14:39:54 by yachen           ###   ########.fr       */
+/*   Updated: 2023/09/25 11:32:44 by yachen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,29 +30,39 @@
 # define MAA_F "\e[35;1m"
 # define MAA "\e[95;1m"
 
-typedef struct s_data
-{	
-	int					nb_philo;
-	size_t				time_die;
-	size_t				time_eat;
-	size_t				time_sleep;
-	int					nb_time_musteat;
-	pthread_mutex_t		write_lock;
-}				t_data;
-
 typedef struct s_philo
 {
-	t_data				*data;
-	int					philo_id;
-	pthread_t			thread;
-	pthread_mutex_t		mutex;
-	int					fork;
-	int					time_eaten;
-}				t_philo;
+	pthread_t		thread;
+	int				id;
+	int				eating;
+	int				meals_eaten;
+	size_t			last_meal;
+	size_t			time_to_die;
+	size_t			time_to_eat;
+	size_t			time_to_sleep;
+	size_t			start_time;
+	int				num_of_philos;
+	int				num_times_to_eat;
+	int				*dead;
+	pthread_mutex_t	*r_fork;
+	pthread_mutex_t	*l_fork;
+	pthread_mutex_t	*write_lock;
+	pthread_mutex_t	*dead_lock;
+	pthread_mutex_t	*meal_lock;
+}					t_philo;
+
+typedef struct s_program
+{
+	int				dead_flag;
+	pthread_mutex_t	dead_lock;
+	pthread_mutex_t	meal_lock;
+	pthread_mutex_t	write_lock;
+	t_philo			*philos;
+}					t_program;
 
 int 	philo_ft_atoi(char *str);
-int		check_digit(char **argv);
 int		arguments_parsing(int argc, char **argv);
-void	get_timestamp(void);
+size_t	get_current_time(void);
+int		ft_usleep(size_t milliseconds);
 
 #endif
