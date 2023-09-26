@@ -6,7 +6,7 @@
 #    By: yachen <yachen@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/08/13 10:56:05 by yachen            #+#    #+#              #
-#    Updated: 2023/09/20 10:59:21 by yachen           ###   ########.fr        #
+#    Updated: 2023/09/26 14:22:01 by yachen           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,6 +21,7 @@ CFLAGS =  -Wall -Wextra -Werror -g
 RM = rm -rf
 
 SRC = ./philo/srcs/philosophers.c ./philo/srcs/argument_parsing.c ./philo/srcs/utils1.c \
+	  ./philo/srcs/struct_initialization.c \
 
 SRC_B = 
 
