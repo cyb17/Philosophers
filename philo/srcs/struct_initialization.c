@@ -6,7 +6,7 @@
 /*   By: yachen <yachen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/26 14:15:56 by yachen            #+#    #+#             */
-/*   Updated: 2023/09/26 14:57:25 by yachen           ###   ########.fr       */
+/*   Updated: 2023/09/28 17:29:11 by yachen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,7 @@ static int	init_fork(int nb_philo, pthread_mutex_t **fork)
 		{
 			while (--i >= 0)
 				pthread_mutex_destroy(&(*fork)[i]);
-			return (-1);i = 0;
-	err = 0;
+			return (-1);
 		}
 		i++;
 	}
@@ -56,6 +55,7 @@ static int	init_monitor(t_pgm *monitor)
 		return (-1);
 	}
 	monitor->philos = NULL;
+	monitor->forks = NULL;
 	return (0);
 }
 
@@ -65,14 +65,14 @@ static void	init_philo2(char **av, t_philo *philo, t_pgm *mnt)
 	philo->id = 0;
 	philo->eating = 0;
 	philo->meals_eaten = 0;
-	philo->last_meal = 0;
+	philo->last_meal = get_current_time();
 	philo->time_to_die = philo_ft_atoi(av[2]);
 	philo->time_to_eat = philo_ft_atoi(av[3]);
 	philo->time_to_sleep = philo_ft_atoi(av[4]);
-	philo->start_time = 0;
+	philo->start_time = get_current_time();
 	philo->num_of_philos = philo_ft_atoi(av[1]);
 	philo->num_times_to_eat = 0;
-	if (av[5] != NULL)
+	if (av[5] != NULL && philo_ft_atoi(av[5]) != 0)
 		philo->num_times_to_eat = philo_ft_atoi(av[5]);
 	philo->dead = &mnt->dead_flag;
 	philo->r_fork = NULL;
@@ -100,9 +100,9 @@ static int	init_philo1(char **av, t_philo **philo, t_pgm *mnt, pthread_mutex_t *
 		(*philo)[i].id = i + 1;
 		(*philo)[i].r_fork = &(*fork)[i];
 		if (i == nb_philo - 1)
-			(*philo)[i].l_fork = &(*fork)[(((i + 1) % nb_philo) - 1)];
+			(*philo)[i].l_fork = &(*fork)[0];
 		else
-			(*philo)[i].l_fork = &(*fork)[(i + 1) % nb_philo];
+			(*philo)[i].l_fork = &(*fork)[i + 1];
 		i++;
 	}
 	return (0);
@@ -117,17 +117,20 @@ int	init_all(char **av, pthread_mutex_t **fork, t_philo **philo, t_pgm *mnt)
 		return (-1);
 	if (init_monitor(mnt) == -1)
 	{
-		clean_fork(fork, nb_philo);
+		clean_forks(fork, nb_philo);
 		return (-1);
 	}
 	if (init_philo1(av, philo, mnt, fork) == -1)
 	{
-		clean_fork(fork, nb_philo);
+		clean_forks(fork, nb_philo);
 		clean_monitor(mnt);
 		return (-1);
 	}
+	mnt->philos = *philo;
+	mnt->forks = *fork;
 	return (0);
 }
+
 /* test if initialization is successful
 
 void print_philo(t_philo *philo) {
@@ -153,6 +156,7 @@ void print_philo(t_philo *philo) {
 void print_program(t_pgm *program) {
     printf("t_program structure:\n");
     printf("  dead_flag: %d\n", program->dead_flag);
+	printf("  dead_flag adress: %p\n", &program->dead_flag);
     printf("  philos: %p\n", (void *)program->philos);
 }
 
@@ -162,15 +166,14 @@ int	main(int argc, char **argv)
 	t_philo			*philo;
 	pthread_mutex_t	*forks;
 	
-	if (arguments_parsing(argc, argv) == -1
-	 || init_all(argv, &forks, &philo, &monitor) == -1)
-		return (-1);
+	init_all(argv, &forks, &philo, &monitor);
 	print_program(&monitor);
+	printf("\n------------");
 	print_philo(&philo[0]);
 	printf("\n------------");
 	print_philo(&philo[1]);
 	printf("\n------------");
 	print_philo(&philo[2]);
 	return (0);
-}
-*/
+}*/
+

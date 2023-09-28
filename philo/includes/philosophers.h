@@ -6,7 +6,7 @@
 /*   By: yachen <yachen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/19 13:37:00 by yachen            #+#    #+#             */
-/*   Updated: 2023/09/26 14:24:24 by yachen           ###   ########.fr       */
+/*   Updated: 2023/09/28 16:51:40 by yachen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,7 @@ typedef struct s_program
 	pthread_mutex_t	meal_lock;
 	pthread_mutex_t	write_lock;
 	t_philo			*philos;
+	pthread_mutex_t	*forks;
 }					t_pgm;
 
 int		arguments_parsing(int argc, char **argv);
@@ -65,8 +66,9 @@ int		init_all(char **av, pthread_mutex_t **fork, t_philo **philo, t_pgm *mnt);
 
 // utils1
 int 	philo_ft_atoi(char *str);
-void	clean_fork(pthread_mutex_t **fork, int nb_fork);
+void	clean_forks(pthread_mutex_t **fork, int nb_fork);
 void	clean_monitor(t_pgm *monitor);
+void	clean_all(t_pgm *monitor);
 size_t	get_current_time(void);
 int		ft_usleep(size_t milliseconds);
 

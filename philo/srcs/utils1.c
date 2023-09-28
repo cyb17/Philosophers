@@ -6,7 +6,7 @@
 /*   By: yachen <yachen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/13 14:13:35 by yachen            #+#    #+#             */
-/*   Updated: 2023/09/26 14:19:59 by yachen           ###   ########.fr       */
+/*   Updated: 2023/09/28 16:51:07 by yachen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ int philo_ft_atoi(char *str)
 	return (nb);
 }
 
-void	clean_fork(pthread_mutex_t **fork, int nb_fork)
+void	clean_forks(pthread_mutex_t **fork, int nb_fork)
 {
 	int	i;
 
@@ -43,6 +43,14 @@ void	clean_monitor(t_pgm *monitor)
 	pthread_mutex_destroy(&monitor->dead_lock);
 	pthread_mutex_destroy(&monitor->meal_lock);
 	pthread_mutex_destroy(&monitor->write_lock);
+}
+
+void	clean_all(t_pgm *monitor)
+{
+	clean_monitor(monitor);
+	clean_forks(&monitor->forks, monitor->philos[0].num_of_philos);
+	free(monitor->forks);
+	free(monitor->philos);
 }
 
 // Gets the current time in milliseconds
