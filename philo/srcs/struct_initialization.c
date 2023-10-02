@@ -6,7 +6,7 @@
 /*   By: yachen <yachen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/26 14:15:56 by yachen            #+#    #+#             */
-/*   Updated: 2023/09/28 17:29:11 by yachen           ###   ########.fr       */
+/*   Updated: 2023/10/02 10:50:56 by yachen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,17 +41,18 @@ static int	init_fork(int nb_philo, pthread_mutex_t **fork)
 static int	init_monitor(t_pgm *monitor)
 {
 	monitor->dead_flag = 0;
-	if (pthread_mutex_init(&monitor->dead_lock, NULL) != 0)
+	monitor->eat_meal_time = 0;
+	/*if (pthread_mutex_init(&monitor->dead_lock, NULL) != 0)
 		return (-1);
 	if (pthread_mutex_init(&monitor->meal_lock, NULL) != 0)
 	{
 		pthread_mutex_destroy(&monitor->dead_lock);
 		return (-1);
-	}
+	}*/
 	if (pthread_mutex_init(&monitor->write_lock, NULL) != 0)
 	{
-		pthread_mutex_destroy(&monitor->dead_lock);
-		pthread_mutex_destroy(&monitor->meal_lock);
+		//pthread_mutex_destroy(&monitor->dead_lock);
+		//pthread_mutex_destroy(&monitor->meal_lock);
 		return (-1);
 	}
 	monitor->philos = NULL;
@@ -75,11 +76,12 @@ static void	init_philo2(char **av, t_philo *philo, t_pgm *mnt)
 	if (av[5] != NULL && philo_ft_atoi(av[5]) != 0)
 		philo->num_times_to_eat = philo_ft_atoi(av[5]);
 	philo->dead = &mnt->dead_flag;
+	philo->meal = &mnt->eat_meal_time;
 	philo->r_fork = NULL;
 	philo->l_fork = NULL;
 	philo->write_lock = &mnt->write_lock;
-	philo->dead_lock = &mnt->dead_lock;
-	philo->meal_lock = &mnt->meal_lock;
+	//philo->dead_lock = &mnt->dead_lock;
+	//philo->meal_lock = &mnt->meal_lock;
 }
 
 static int	init_philo1(char **av, t_philo **philo, t_pgm *mnt, pthread_mutex_t **fork)

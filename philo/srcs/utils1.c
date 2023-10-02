@@ -6,7 +6,7 @@
 /*   By: yachen <yachen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/13 14:13:35 by yachen            #+#    #+#             */
-/*   Updated: 2023/09/28 16:51:07 by yachen           ###   ########.fr       */
+/*   Updated: 2023/10/02 10:48:26 by yachen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,8 +40,8 @@ void	clean_forks(pthread_mutex_t **fork, int nb_fork)
 
 void	clean_monitor(t_pgm *monitor)
 {
-	pthread_mutex_destroy(&monitor->dead_lock);
-	pthread_mutex_destroy(&monitor->meal_lock);
+	//pthread_mutex_destroy(&monitor->dead_lock);
+	//pthread_mutex_destroy(&monitor->meal_lock);
 	pthread_mutex_destroy(&monitor->write_lock);
 }
 

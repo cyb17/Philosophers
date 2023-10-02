@@ -6,7 +6,7 @@
 /*   By: yachen <yachen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/25 11:31:45 by yachen            #+#    #+#             */
-/*   Updated: 2023/09/29 17:35:00 by yachen           ###   ########.fr       */
+/*   Updated: 2023/10/02 10:49:03 by yachen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,8 @@ void	even_take_forks(t_philo *philo)
 	philo->last_meal = get_current_time();
 	ft_usleep(philo->time_to_eat);
 	philo->meals_eaten++;
+	if (philo->meals_eaten == philo->num_times_to_eat)
+		(*philo->meal)++;
 	if (*(philo->dead) == 1)
 		return ;
 	pthread_mutex_unlock(philo->l_fork);
@@ -74,6 +76,8 @@ void	odd_take_forks(t_philo *philo)
 	philo->last_meal = get_current_time();
 	ft_usleep(philo->time_to_eat);
 	philo->meals_eaten++;
+	if (philo->meals_eaten == philo->num_times_to_eat)
+		(*philo->meal)++;
 	if (*(philo->dead) == 1)
 		return ;
 	pthread_mutex_unlock(philo->r_fork);
@@ -84,8 +88,9 @@ void	odd_take_forks(t_philo *philo)
 
 int	check_philo_death(t_philo *philo)
 {
-	if (((get_current_time() - philo->start_time) > philo->time_to_die)
-			&& ((get_current_time() - philo->last_meal) > philo->time_to_die))
+	if ((((get_current_time() - philo->start_time) > philo->time_to_die)
+		&& ((get_current_time() - philo->last_meal) > philo->time_to_die))
+		|| (*(philo->meal) == philo->num_of_philos))
 	{
 		*(philo->dead) = 1;
 		print_msg(philo, 'd');
@@ -121,28 +126,13 @@ void	*routine(void *arg)
 	return (NULL);
 }
 
-/*int	check_eaten_time(t_philo *philo)
-{
-	int	i;
-
-	i = 0;
-	while (i < philo[0].num_of_philos)
-	{
-		if (philo[0].num_times_to_eat != 0
-			&& philo[i].meals_eaten == philo[0].num_times_to_eat)
-			return (0);
-		i++;
-	}
-	return (-1);
-}
-*/
-
 int	main(int argc, char **argv)
 {
 	t_pgm			monitor;
 	t_philo			*philo;
 	pthread_mutex_t	*forks;
 	int				i;
+	int				j;
 	
 	i = 0;
 	if (arguments_parsing(argc, argv) == -1
@@ -150,12 +140,16 @@ int	main(int argc, char **argv)
 		return (-1);
 	while (i < philo[0].num_of_philos)
 	{
-		pthread_create(&philo[i].thread, NULL, &routine, &philo[i]);
+		if (pthread_create(&philo[i].thread, NULL, &routine, &philo[i]) != 0)
+		{
+			printf("Error : pthread_create\n");
+			break ;
+		}
 		i++;
 	}
-	i = 0;
-	while (i < philo[0].num_of_philos)
-		pthread_join(philo[i++].thread, NULL);
+	j = 0;
+	while (j < i)
+		pthread_join(philo[j++].thread, NULL);
 	clean_all(&monitor);
 	return (0);
 }
