@@ -6,7 +6,7 @@
 /*   By: yachen <yachen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/13 14:17:49 by yachen            #+#    #+#             */
-/*   Updated: 2023/09/25 16:53:58 by yachen           ###   ########.fr       */
+/*   Updated: 2023/10/02 15:01:29 by yachen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ static int	check_digit(char **argv)
 {
 	int	i;
 	int	j;
-	
+
 	i = 1;
 	while (argv[i])
 	{
@@ -36,6 +36,7 @@ static int	check_digit(char **argv)
 	}
 	return (0);
 }
+
 static int	check_number(char **argv)
 {
 	if (philo_ft_atoi(argv[1]) == 0 || philo_ft_atoi(argv[2]) == 0
@@ -54,12 +55,6 @@ int	arguments_parsing(int argc, char **argv)
 	else if (check_digit(argv) == -1 || check_number(argv) == -1)
 	{
 		printf("One of the arguments is not a correct positive number\n");
-		return (-1);
-	}
-	else if (philo_ft_atoi(argv[1]) > 200)
-	{
-		printf("The limit of philosophers's number is 200,");
-		printf("please do not exceed\n");
 		return (-1);
 	}
 	return (0);

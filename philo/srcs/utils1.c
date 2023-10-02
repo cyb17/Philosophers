@@ -6,13 +6,13 @@
 /*   By: yachen <yachen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/13 14:13:35 by yachen            #+#    #+#             */
-/*   Updated: 2023/10/02 10:48:26 by yachen           ###   ########.fr       */
+/*   Updated: 2023/10/02 15:58:49 by yachen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include  "../includes/philosophers.h"
 
-int philo_ft_atoi(char *str)
+int	philo_ft_atoi(char *str)
 {
 	int		i;
 	int		nb;
@@ -38,19 +38,14 @@ void	clean_forks(pthread_mutex_t **fork, int nb_fork)
 		pthread_mutex_destroy(&(*fork)[i++]);
 }
 
-void	clean_monitor(t_pgm *monitor)
+void	clean_all(t_pgm *pgm)
 {
-	//pthread_mutex_destroy(&monitor->dead_lock);
-	//pthread_mutex_destroy(&monitor->meal_lock);
-	pthread_mutex_destroy(&monitor->write_lock);
-}
-
-void	clean_all(t_pgm *monitor)
-{
-	clean_monitor(monitor);
-	clean_forks(&monitor->forks, monitor->philos[0].num_of_philos);
-	free(monitor->forks);
-	free(monitor->philos);
+	pthread_mutex_destroy(&pgm->write_lock);
+	pthread_mutex_destroy(&pgm->meal_lock);
+	pthread_mutex_destroy(&pgm->dead_lock);
+	clean_forks(&pgm->forks, pgm->philos[0].num_of_philos);
+	free(pgm->forks);
+	free(pgm->philos);
 }
 
 // Gets the current time in milliseconds
@@ -63,7 +58,8 @@ size_t	get_current_time(void)
 	return (time.tv_sec * 1000 + time.tv_usec / 1000);
 }
 
-// Improved version of sleep function
+/* Improved version of sleep function, allows you to wait a certain number
+ of milliseconds without completely blocking the program */
 int	ft_usleep(size_t milliseconds)
 {
 	size_t	start;

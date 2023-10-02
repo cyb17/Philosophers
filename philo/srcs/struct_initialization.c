@@ -6,7 +6,7 @@
 /*   By: yachen <yachen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/26 14:15:56 by yachen            #+#    #+#             */
-/*   Updated: 2023/10/02 10:50:56 by yachen           ###   ########.fr       */
+/*   Updated: 2023/10/02 15:58:11 by yachen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,34 +37,33 @@ static int	init_fork(int nb_philo, pthread_mutex_t **fork)
 	return (0);
 }
 
-// initialize the monitor
-static int	init_monitor(t_pgm *monitor)
+// initialize the pgm
+static int	init_pgm(t_pgm *pgm)
 {
-	monitor->dead_flag = 0;
-	monitor->eat_meal_time = 0;
-	/*if (pthread_mutex_init(&monitor->dead_lock, NULL) != 0)
+	pgm->dead_flag = 0;
+	pgm->eat_meal_time = 0;
+	if (pthread_mutex_init(&pgm->write_lock, NULL) != 0)
 		return (-1);
-	if (pthread_mutex_init(&monitor->meal_lock, NULL) != 0)
+	if (pthread_mutex_init(&pgm->meal_lock, NULL) != 0)
 	{
-		pthread_mutex_destroy(&monitor->dead_lock);
-		return (-1);
-	}*/
-	if (pthread_mutex_init(&monitor->write_lock, NULL) != 0)
-	{
-		//pthread_mutex_destroy(&monitor->dead_lock);
-		//pthread_mutex_destroy(&monitor->meal_lock);
+		pthread_mutex_destroy(&pgm->write_lock);
 		return (-1);
 	}
-	monitor->philos = NULL;
-	monitor->forks = NULL;
+	if (pthread_mutex_init(&pgm->dead_lock, NULL) != 0)
+	{
+		pthread_mutex_destroy(&pgm->write_lock);
+		pthread_mutex_destroy(&pgm->meal_lock);
+		return (-1);
+	}
+	pgm->philos = NULL;
+	pgm->forks = NULL;
 	return (0);
 }
 
-static void	init_philo2(char **av, t_philo *philo, t_pgm *mnt)
+static void	init_2(char **av, t_philo *philo, t_pgm *pgm)
 {
 	philo->thread = 0;
 	philo->id = 0;
-	philo->eating = 0;
 	philo->meals_eaten = 0;
 	philo->last_meal = get_current_time();
 	philo->time_to_die = philo_ft_atoi(av[2]);
@@ -75,21 +74,21 @@ static void	init_philo2(char **av, t_philo *philo, t_pgm *mnt)
 	philo->num_times_to_eat = 0;
 	if (av[5] != NULL && philo_ft_atoi(av[5]) != 0)
 		philo->num_times_to_eat = philo_ft_atoi(av[5]);
-	philo->dead = &mnt->dead_flag;
-	philo->meal = &mnt->eat_meal_time;
+	philo->dead = &pgm->dead_flag;
+	philo->meal = &pgm->eat_meal_time;
 	philo->r_fork = NULL;
 	philo->l_fork = NULL;
-	philo->write_lock = &mnt->write_lock;
-	//philo->dead_lock = &mnt->dead_lock;
-	//philo->meal_lock = &mnt->meal_lock;
+	philo->write_lock = &pgm->write_lock;
+	philo->meal_lock = &pgm->meal_lock;
+	philo->dead_lock = &pgm->dead_lock;
 }
 
-static int	init_philo1(char **av, t_philo **philo, t_pgm *mnt, pthread_mutex_t **fork)
+int	init_1(char **av, t_philo **philo, t_pgm *pgm, pthread_mutex_t **fork)
 {
 	int	i;
 	int	err;
 	int	nb_philo;
-	
+
 	i = 0;
 	err = 0;
 	nb_philo = philo_ft_atoi(av[1]);
@@ -98,7 +97,7 @@ static int	init_philo1(char **av, t_philo **philo, t_pgm *mnt, pthread_mutex_t *
 		return (-1);
 	while (i < nb_philo)
 	{
-		init_philo2(av, (*philo) + i, mnt);
+		init_2(av, (*philo) + i, pgm);
 		(*philo)[i].id = i + 1;
 		(*philo)[i].r_fork = &(*fork)[i];
 		if (i == nb_philo - 1)
@@ -110,72 +109,27 @@ static int	init_philo1(char **av, t_philo **philo, t_pgm *mnt, pthread_mutex_t *
 	return (0);
 }
 
-int	init_all(char **av, pthread_mutex_t **fork, t_philo **philo, t_pgm *mnt)
+int	init_all(char **av, pthread_mutex_t **fork, t_philo **ph, t_pgm *pgm)
 {
 	int	nb_philo;
 
 	nb_philo = philo_ft_atoi(av[1]);
 	if (init_fork(nb_philo, fork) == -1)
 		return (-1);
-	if (init_monitor(mnt) == -1)
+	if (init_pgm(pgm) == -1)
 	{
 		clean_forks(fork, nb_philo);
 		return (-1);
 	}
-	if (init_philo1(av, philo, mnt, fork) == -1)
+	if (init_1(av, ph, pgm, fork) == -1)
 	{
 		clean_forks(fork, nb_philo);
-		clean_monitor(mnt);
+		pthread_mutex_destroy(&pgm->write_lock);
+		pthread_mutex_destroy(&pgm->meal_lock);
+		pthread_mutex_destroy(&pgm->dead_lock);
 		return (-1);
 	}
-	mnt->philos = *philo;
-	mnt->forks = *fork;
+	pgm->philos = *ph;
+	pgm->forks = *fork;
 	return (0);
 }
-
-/* test if initialization is successful
-
-void print_philo(t_philo *philo) {
-    printf("t_philo structure:\n");
-    printf("  id: %d\n", philo->id);
-    printf("  eating: %d\n", philo->eating);
-    printf("  meals_eaten: %d\n", philo->meals_eaten);
-    printf("  last_meal: %zu\n", philo->last_meal);
-    printf("  time_to_die: %zu\n", philo->time_to_die);
-    printf("  time_to_eat: %zu\n", philo->time_to_eat);
-    printf("  time_to_sleep: %zu\n", philo->time_to_sleep);
-    printf("  start_time: %zu\n", philo->start_time);
-    printf("  num_of_philos: %d\n", philo->num_of_philos);
-    printf("  num_times_to_eat: %d\n", philo->num_times_to_eat);
-    printf("  dead: %p\n", (void *)philo->dead);
-    printf("  r_fork: %p\n", (void *)philo->r_fork);
-    printf("  l_fork: %p\n", (void *)philo->l_fork);
-    printf("  write_lock: %p\n", (void *)philo->write_lock);
-    printf("  dead_lock: %p\n", (void *)philo->dead_lock);
-    printf("  meal_lock: %p\n", (void *)philo->meal_lock);
-}
-
-void print_program(t_pgm *program) {
-    printf("t_program structure:\n");
-    printf("  dead_flag: %d\n", program->dead_flag);
-	printf("  dead_flag adress: %p\n", &program->dead_flag);
-    printf("  philos: %p\n", (void *)program->philos);
-}
-
-int	main(int argc, char **argv)
-{
-	t_pgm			monitor;
-	t_philo			*philo;
-	pthread_mutex_t	*forks;
-	
-	init_all(argv, &forks, &philo, &monitor);
-	print_program(&monitor);
-	printf("\n------------");
-	print_philo(&philo[0]);
-	printf("\n------------");
-	print_philo(&philo[1]);
-	printf("\n------------");
-	print_philo(&philo[2]);
-	return (0);
-}*/
-
