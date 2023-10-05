@@ -6,7 +6,7 @@
 #    By: yachen <yachen@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/08/13 10:56:05 by yachen            #+#    #+#              #
-#    Updated: 2023/10/05 17:26:50 by yachen           ###   ########.fr        #
+#    Updated: 2023/10/05 17:25:23 by yachen           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,8 +18,8 @@ CFLAGS =  -Wall -Wextra -Werror -g
 
 RM = rm -rf
 
-SRC = ./old_philo/srcs/philosophers.c ./old_philo/srcs/argument_parsing.c ./old_philo/srcs/utils1.c \
-	  ./old_philo/srcs/struct_initialization.c ./old_philo/srcs/utils2.c \
+SRC = ./new_philo/srcs/philosophers.c ./new_philo/srcs/argument_parsing.c ./new_philo/srcs/utils1.c \
+	  ./new_philo/srcs/struct_initialization.c ./new_philo/srcs/utils2.c \
 
 OBJ = $(SRC:.c=.o)
 
