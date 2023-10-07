@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/philosophers.h"
+#include "./includes/philosophers.h"
 
 static int	init_fork(int nb_philo, pthread_mutex_t **fork)
 {

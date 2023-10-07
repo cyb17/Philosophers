@@ -10,9 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/philosophers.h"
+#include "./includes/philosophers.h"
 
-int	philo_is_dead(t_philo *philo, char indice)
+/*int	philo_is_dead(t_philo *philo, char indice)
 {	
 	pthread_mutex_lock(philo->dead_lock);
 	if (*(philo->dead) == 1)
@@ -31,7 +31,7 @@ int	philo_is_dead(t_philo *philo, char indice)
 	}
 	pthread_mutex_unlock(philo->dead_lock);
 	return (0);
-}
+}*/
 
 void	print_msg(t_philo *philo, char indice)
 {

@@ -12,7 +12,7 @@
 
 #include "./includes/philosophers.h"
 
-static void	eating(t_philo *philo)
+/*static void	eating(t_philo *philo)
 {
 	print_msg(philo, 'e');
 	pthread_mutex_lock(philo->meal_lock);
@@ -85,7 +85,7 @@ static void	*routine(void *arg)
 			return (NULL);
 	}
 	return (NULL);
-}
+}*/
 
 int	create_thread(t_philo *philo, int *i)
 {

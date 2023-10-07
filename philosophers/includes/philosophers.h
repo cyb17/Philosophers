@@ -77,5 +77,7 @@ int		philo_is_dead(t_philo *philo, char indice);
 void	print_msg(t_philo *philo, char indice);
 
 int		monitor(t_pgm *pgm);
+void	*routine(void *arg);
+int		check_dead_flag(t_philo *philo);
 
 #endif

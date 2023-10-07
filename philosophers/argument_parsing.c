@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/philosophers.h"
+#include "./includes/philosophers.h"
 
 static int	check_digit(char **argv)
 {

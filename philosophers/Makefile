@@ -14,12 +14,12 @@ NAME = philo
 
 CC = cc
 
-CFLAGS =  -Wall -Wextra -Werror -g
+CFLAGS =  -Wall -Wextra -Werror -g #-fsanitize=thread
 
 RM = rm -rf
 
-SRC = philosophers.c argument_parsing.c utils1.c \
-	  struct_initialization.c utils2.c \
+SRC = philosophers.c argument_parsing.c utils1.c utils2.c \
+	  struct_initialization.c monitor.c routine.c \
 
 OBJ = $(SRC:.c=.o)
 

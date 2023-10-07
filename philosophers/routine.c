@@ -64,4 +64,5 @@ void	*routine(void *arg)
 		sleep(philo);
 		think(philo);
 	}
+	return (NULL);
 }

@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include  "../includes/philosophers.h"
+#include  "./includes/philosophers.h"
 
 int	philo_ft_atoi(char *str)
 {
