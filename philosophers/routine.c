@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   routine.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: yachen <yachen@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/10/07 17:19:57 by yachen            #+#    #+#             */
+/*   Updated: 2023/10/07 17:20:01 by yachen           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "./includes/philosophers.h"
 
 int	check_dead_flag(t_philo *philo)
@@ -12,7 +24,7 @@ int	check_dead_flag(t_philo *philo)
 	return (0);
 }
 
-void	action_time(t_philo *philo, size_t act_time)
+static void	action_time(t_philo *philo, size_t act_time)
 {
 	size_t	time1;
 	size_t	time2;
@@ -30,7 +42,7 @@ void	action_time(t_philo *philo, size_t act_time)
 
 }
 
-void	eat(t_philo *philo)
+static void	eat(t_philo *philo)
 {
 	pthread_mutex_lock(philo->meal_lock);
 	print_msg(philo, 'e');
@@ -42,13 +54,13 @@ void	eat(t_philo *philo)
 	pthread_mutex_unlock(philo->meal_lock);
 }
 
-void	sleep(t_philo *philo)
+static void	sleep(t_philo *philo)
 {
 	print_msg(philo, 's');
 	action_time(philo, philo->time_to_sleep);
 }
 
-void	think(t_philo *philo)
+static void	think(t_philo *philo)
 {
 	print_msg(philo,'t');
 }
