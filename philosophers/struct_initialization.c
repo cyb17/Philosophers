@@ -6,7 +6,7 @@
 /*   By: yachen <yachen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/26 14:15:56 by yachen            #+#    #+#             */
-/*   Updated: 2023/10/05 16:43:19 by yachen           ###   ########.fr       */
+/*   Updated: 2023/10/09 16:01:13 by yachen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,12 +36,12 @@ static int	init_fork(int nb_philo, pthread_mutex_t **fork)
 	return (0);
 }
 
-static int	init_pgm(t_pgm *pgm)
+static int	init_pgm(t_pgm *pgm, int nb_philo)
 {
 	pgm->dead_flag = 0;
 	if (pthread_mutex_init(&pgm->write_lock, NULL) != 0)
 		return (-1);
-	if (pthread_mutex_init(&pgm->meal_lock, NULL) != 0)
+	if (init_fork(nb_philo, &pgm->meal_lock) == -1)
 	{
 		pthread_mutex_destroy(&pgm->write_lock);
 		return (-1);
@@ -49,7 +49,8 @@ static int	init_pgm(t_pgm *pgm)
 	if (pthread_mutex_init(&pgm->dead_lock, NULL) != 0)
 	{
 		pthread_mutex_destroy(&pgm->write_lock);
-		pthread_mutex_destroy(&pgm->meal_lock);
+		clean_forks(&pgm->meal_lock, nb_philo);
+	//	pthread_mutex_destroy(&pgm->meal_lock);
 		return (-1);
 	}
 	pgm->philos = NULL;
@@ -76,7 +77,7 @@ static void	init_2(char **av, t_philo *philo, t_pgm *pgm)
 	philo->r_fork = NULL;
 	philo->l_fork = NULL;
 	philo->write_lock = &pgm->write_lock;
-	philo->meal_lock = &pgm->meal_lock;
+	philo->meal_lock = pgm->meal_lock;
 	philo->dead_lock = &pgm->dead_lock;
 }
 
@@ -96,11 +97,25 @@ int	init_1(char **av, t_philo **philo, t_pgm *pgm, pthread_mutex_t **fork)
 	{
 		init_2(av, (*philo) + i, pgm);
 		(*philo)[i].id = i + 1;
-		(*philo)[i].r_fork = &(*fork)[i];
-		if (i == nb_philo - 1)
-			(*philo)[i].l_fork = &(*fork)[0];
+		if ((*philo)[i].id % 2 == 0)
+		{
+			(*philo)[i].r_fork = &(*fork)[i];
+			if (i == nb_philo - 1)
+				(*philo)[i].l_fork = &(*fork)[0];
+			else
+				(*philo)[i].l_fork = &(*fork)[i + 1];
+		}
 		else
-			(*philo)[i].l_fork = &(*fork)[i + 1];
+		{
+			(*philo)[i].r_fork = &(*fork)[i + 1];
+			if (i == nb_philo - 1)
+			{
+				(*philo)[i].r_fork = &(*fork)[i];
+				(*philo)[i].l_fork = &(*fork)[0];
+			}
+			else
+				(*philo)[i].l_fork = &(*fork)[i];
+		}
 		i++;
 	}
 	return (0);
@@ -113,7 +128,7 @@ int	init_all(char **av, pthread_mutex_t **fork, t_philo **ph, t_pgm *pgm)
 	nb_philo = philo_ft_atoi(av[1]);
 	if (init_fork(nb_philo, fork) == -1)
 		return (-1);
-	if (init_pgm(pgm) == -1)
+	if (init_pgm(pgm, nb_philo) == -1)
 	{
 		clean_forks(fork, nb_philo);
 		return (-1);
@@ -121,8 +136,9 @@ int	init_all(char **av, pthread_mutex_t **fork, t_philo **ph, t_pgm *pgm)
 	if (init_1(av, ph, pgm, fork) == -1)
 	{
 		clean_forks(fork, nb_philo);
+		clean_forks(&pgm->meal_lock, nb_philo);
 		pthread_mutex_destroy(&pgm->write_lock);
-		pthread_mutex_destroy(&pgm->meal_lock);
+	//	pthread_mutex_destroy(&pgm->meal_lock);
 		pthread_mutex_destroy(&pgm->dead_lock);
 		return (-1);
 	}

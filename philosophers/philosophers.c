@@ -6,7 +6,7 @@
 /*   By: yachen <yachen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/25 11:31:45 by yachen            #+#    #+#             */
-/*   Updated: 2023/10/05 17:04:05 by yachen           ###   ########.fr       */
+/*   Updated: 2023/10/09 16:51:02 by yachen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,7 +107,7 @@ void	run_monitor(t_pgm *pgm)
 	{
 		if (monitor(pgm) == 1)
 			break ;
-		ft_usleep(1);
+	//	usleep(100);
 	}
 }
 

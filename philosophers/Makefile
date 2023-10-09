@@ -6,7 +6,7 @@
 #    By: yachen <yachen@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/08/13 10:56:05 by yachen            #+#    #+#              #
-#    Updated: 2023/10/05 17:26:50 by yachen           ###   ########.fr        #
+#    Updated: 2023/10/09 14:57:22 by yachen           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,7 +19,7 @@ CFLAGS =  -Wall -Wextra -Werror -g #-fsanitize=thread
 RM = rm -rf
 
 SRC = philosophers.c argument_parsing.c utils1.c utils2.c \
-	  struct_initialization.c monitor.c routine.c \
+	  struct_initialization.c routine.c monitor.c \
 
 OBJ = $(SRC:.c=.o)
 

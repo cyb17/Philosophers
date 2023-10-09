@@ -6,7 +6,7 @@
 /*   By: yachen <yachen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/02 11:20:16 by yachen            #+#    #+#             */
-/*   Updated: 2023/10/05 16:43:10 by yachen           ###   ########.fr       */
+/*   Updated: 2023/10/09 14:47:22 by yachen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,11 @@ void	print_msg(t_philo *philo, char indice)
 	size_t	timestamp;
 
 	pthread_mutex_lock(philo->write_lock);
+	if (check_dead_flag(philo) == 1)
+	{
+		pthread_mutex_unlock(philo->write_lock);
+		return ;
+	}
 	timestamp = get_current_time() - philo->start_time;
 	printf("%s%zu%s ", WHE, timestamp, DEF);
 	if (indice == 'f')

@@ -6,7 +6,7 @@
 /*   By: yachen <yachen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/07 17:19:57 by yachen            #+#    #+#             */
-/*   Updated: 2023/10/07 17:20:01 by yachen           ###   ########.fr       */
+/*   Updated: 2023/10/09 16:46:08 by yachen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ int	check_dead_flag(t_philo *philo)
 	return (0);
 }
 
-static void	action_time(t_philo *philo, size_t act_time)
+/*static void	action_time(t_philo *philo, size_t act_time)
 {
 	size_t	time1;
 	size_t	time2;
@@ -39,30 +39,62 @@ static void	action_time(t_philo *philo, size_t act_time)
 		time2 = get_current_time();
 		ft_usleep(10 - (time2 - time1));
 	}
+}*/
 
-}
-
-static void	eat(t_philo *philo)
+static void	eating(t_philo *philo)
 {
-	pthread_mutex_lock(philo->meal_lock);
-	print_msg(philo, 'e');
+	pthread_mutex_lock(philo->meal_lock + (philo->id - 1));
+//	if (check_dead_flag(philo) == 1)
+//		return ;
 	philo->eating = 1;
+//	if (check_dead_flag(philo) == 1)
+//		return ;
 	philo->last_meal = get_current_time();
-	action_time(philo, philo->time_to_eat);
+	ft_usleep(philo->time_to_eat);
+//	action_time(philo, philo->time_to_eat);
+//	if (check_dead_flag(philo) == 1)
+//		return ;
 	philo->meals_eaten++;
+//	if (check_dead_flag(philo) == 1)
+//		return ;
 	philo->eating = 0;
-	pthread_mutex_unlock(philo->meal_lock);
+//	if (check_dead_flag(philo) == 1)
+//		return ;
+	pthread_mutex_unlock(philo->meal_lock + (philo->id - 1));
 }
 
-static void	sleep(t_philo *philo)
+static void	ft_eat(t_philo *philo)
 {
+	pthread_mutex_lock(philo->r_fork);
+	print_msg(philo, 'f');
+	pthread_mutex_lock(philo->l_fork);
+	print_msg(philo, 'f');
+	print_msg(philo, 'e');
+	eating(philo);
+	pthread_mutex_unlock(philo->l_fork);
+	pthread_mutex_unlock(philo->r_fork);
+}
+
+static void	ft_sleep(t_philo *philo)
+{
+//	if (check_dead_flag(philo) == 1)
+//		return ;
 	print_msg(philo, 's');
-	action_time(philo, philo->time_to_sleep);
+//	if (check_dead_flag(philo) == 1)
+//		return ;
+	ft_usleep(philo->time_to_sleep);
+//	action_time(philo, philo->time_to_sleep);
+//	if (check_dead_flag(philo) == 1)
+//		return ;
 }
 
-static void	think(t_philo *philo)
+static void	ft_think(t_philo *philo)
 {
+//	if (check_dead_flag(philo) == 1)
+//		return ;
 	print_msg(philo,'t');
+//	if (check_dead_flag(philo) == 1)
+//		return ;
 }
 
 void	*routine(void *arg)
@@ -72,9 +104,17 @@ void	*routine(void *arg)
 	philo = (t_philo *)arg;
 	while (check_dead_flag(philo) == 0)
 	{
-		eat(philo);
-		sleep(philo);
-		think(philo);
+		if (philo->id % 2 == 0)
+			usleep(1);
+		ft_eat(philo);
+	//	if (check_dead_flag(philo) == 1)
+	//		break ;
+		ft_sleep(philo);
+	//	if (check_dead_flag(philo) == 1)
+	//		break ;
+		ft_think(philo);
+	//	if (check_dead_flag(philo) == 1)
+	//		break ;
 	}
 	return (NULL);
 }
