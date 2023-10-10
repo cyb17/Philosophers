@@ -6,7 +6,7 @@
 /*   By: yachen <yachen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/19 13:37:00 by yachen            #+#    #+#             */
-/*   Updated: 2023/10/09 14:04:40 by yachen           ###   ########.fr       */
+/*   Updated: 2023/10/10 20:30:33 by yachen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ typedef struct s_pgm
 {
 	int				dead_flag;
 	pthread_mutex_t	write_lock;
-	pthread_mutex_t	*meal_lock;
+	pthread_mutex_t	meal_lock;
 	pthread_mutex_t	dead_lock;
 	t_philo			*philos;
 	pthread_mutex_t	*forks;
@@ -76,7 +76,7 @@ int		ft_usleep(size_t milliseconds);
 //int		philo_is_dead(t_philo *philo, char indice);
 void	print_msg(t_philo *philo, char indice);
 
-int		monitor(t_pgm *pgm);
+void	run_monitor(t_pgm *pgm);
 void	*routine(void *arg);
 int		check_dead_flag(t_philo *philo);
 

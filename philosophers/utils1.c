@@ -6,7 +6,7 @@
 /*   By: yachen <yachen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/13 14:13:35 by yachen            #+#    #+#             */
-/*   Updated: 2023/10/09 14:32:28 by yachen           ###   ########.fr       */
+/*   Updated: 2023/10/10 20:38:34 by yachen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,10 +41,11 @@ void	clean_forks(pthread_mutex_t **fork, int nb_fork)
 void	clean_all(t_pgm *pgm)
 {
 	pthread_mutex_destroy(&pgm->write_lock);
-	clean_forks(&pgm->meal_lock, pgm->philos[0].nb_of_philos);
+//	clean_forks(&pgm->meal_lock, pgm->philos[0].nb_of_philos);
 	pthread_mutex_destroy(&pgm->dead_lock);
+	pthread_mutex_destroy(&pgm->meal_lock);
 	clean_forks(&pgm->forks, pgm->philos[0].nb_of_philos);
-	free(pgm->meal_lock);
+//	free(pgm->meal_lock);
 	free(pgm->forks);
 	free(pgm->philos);
 }

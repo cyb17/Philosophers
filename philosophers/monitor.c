@@ -6,7 +6,7 @@
 /*   By: yachen <yachen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/07 17:18:59 by yachen            #+#    #+#             */
-/*   Updated: 2023/10/09 16:55:08 by yachen           ###   ########.fr       */
+/*   Updated: 2023/10/10 20:29:28 by yachen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,17 @@
 
 static int	philo_timeout(t_philo *philo)
 {
-	pthread_mutex_lock(philo->meal_lock + (philo->id - 1));
+	pthread_mutex_lock(philo->meal_lock);
 	if ((get_current_time() - philo->last_meal) > philo->time_to_die)
 	{
-		pthread_mutex_unlock(philo->meal_lock + (philo->id - 1));
+		print_msg(philo, 'd');
+		pthread_mutex_lock(philo->dead_lock);
+		*(philo->dead) = 1;
+		pthread_mutex_unlock(philo->dead_lock);
+		pthread_mutex_unlock(philo->meal_lock);
 		return (1);
 	}
-	pthread_mutex_unlock(philo->meal_lock + (philo->id - 1));
+	pthread_mutex_unlock(philo->meal_lock);
 	return (0);
 }
 
@@ -34,10 +38,7 @@ static int	check_any_timeout(t_philo *philo)
 	while (i < nb_of_philos)
 	{
 		if (philo_timeout(philo + i) == 1)
-		{
-			print_msg(philo + i, 'd');
 			return (1);
-		}
 		i++;
 	}
 	return (0);
@@ -46,14 +47,14 @@ static int	check_any_timeout(t_philo *philo)
 static int	philo_eat_enough(t_philo *philo)
 {
 
-	pthread_mutex_lock(philo->meal_lock + (philo->id - 1));
+	pthread_mutex_lock(philo->meal_lock);
 	if (philo->nb_times_to_eat != 0
 		&& philo->meals_eaten >= philo->nb_times_to_eat) 
 	{
-		pthread_mutex_unlock(philo->meal_lock + (philo->id - 1));
+		pthread_mutex_unlock(philo->meal_lock);
 		return (1);
 	}
-	pthread_mutex_unlock(philo->meal_lock + (philo->id - 1));
+	pthread_mutex_unlock(philo->meal_lock);
 	return (0);
 }
 
@@ -74,20 +75,20 @@ static int	check_all_eatenough(t_philo *philo)
 	if (nb_philo_finisheat == nb_of_philos)
 	{
 		print_msg(philo, 'F');
+		pthread_mutex_lock(philo[0].dead_lock);
+		*(philo[0].dead) = 1;
+		pthread_mutex_unlock(philo[0].dead_lock);
 		return (1);
 	}
 	return (0);
 }
 
-int	monitor(t_pgm *pgm)
+void	run_monitor(t_pgm *pgm)
 {
-	if ((check_any_timeout(pgm->philos) == 1)
-		|| (check_all_eatenough(pgm->philos) == 1))
+	while (1)
 	{
-		pthread_mutex_lock(&pgm->dead_lock);
-		pgm->dead_flag = 1;
-		pthread_mutex_unlock(&pgm->dead_lock);
-		return (1);
+		if ((check_any_timeout(pgm->philos) == 1)
+			|| (check_all_eatenough(pgm->philos) == 1))
+			return ;
 	}
-	return (0);
 }

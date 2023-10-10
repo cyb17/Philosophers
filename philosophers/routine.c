@@ -6,7 +6,7 @@
 /*   By: yachen <yachen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/07 17:19:57 by yachen            #+#    #+#             */
-/*   Updated: 2023/10/09 16:46:08 by yachen           ###   ########.fr       */
+/*   Updated: 2023/10/10 20:39:37 by yachen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,27 +41,29 @@ int	check_dead_flag(t_philo *philo)
 	}
 }*/
 
-static void	eating(t_philo *philo)
+/*static void	eating(t_philo *philo)
 {
-	pthread_mutex_lock(philo->meal_lock + (philo->id - 1));
+//	pthread_mutex_lock(philo->meal_lock);
 //	if (check_dead_flag(philo) == 1)
 //		return ;
 	philo->eating = 1;
 //	if (check_dead_flag(philo) == 1)
 //		return ;
+	pthread_mutex_lock(philo->meal_lock);
 	philo->last_meal = get_current_time();
+	philo->meals_eaten++;
+	pthread_mutex_unlock(philo->meal_lock);
 	ft_usleep(philo->time_to_eat);
 //	action_time(philo, philo->time_to_eat);
 //	if (check_dead_flag(philo) == 1)
 //		return ;
-	philo->meals_eaten++;
 //	if (check_dead_flag(philo) == 1)
 //		return ;
 	philo->eating = 0;
 //	if (check_dead_flag(philo) == 1)
 //		return ;
-	pthread_mutex_unlock(philo->meal_lock + (philo->id - 1));
-}
+//	pthread_mutex_unlock(philo->meal_lock);
+}*/
 
 static void	ft_eat(t_philo *philo)
 {
@@ -70,7 +72,15 @@ static void	ft_eat(t_philo *philo)
 	pthread_mutex_lock(philo->l_fork);
 	print_msg(philo, 'f');
 	print_msg(philo, 'e');
-	eating(philo);
+	//eating(philo);
+	philo->eating = 1;
+	pthread_mutex_lock(philo->meal_lock);
+	philo->last_meal = get_current_time();
+	philo->meals_eaten++;
+	pthread_mutex_unlock(philo->meal_lock);
+	ft_usleep(philo->time_to_eat);
+//	action_time(philo, philo->time_to_eat);
+	philo->eating = 0;
 	pthread_mutex_unlock(philo->l_fork);
 	pthread_mutex_unlock(philo->r_fork);
 }
@@ -102,10 +112,10 @@ void	*routine(void *arg)
 	t_philo	*philo;
 
 	philo = (t_philo *)arg;
+	if (philo->id % 2 == 0)
+		ft_usleep(1);
 	while (check_dead_flag(philo) == 0)
 	{
-		if (philo->id % 2 == 0)
-			usleep(1);
 		ft_eat(philo);
 	//	if (check_dead_flag(philo) == 1)
 	//		break ;
