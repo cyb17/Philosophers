@@ -6,12 +6,13 @@
 /*   By: yachen <yachen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/07 17:18:59 by yachen            #+#    #+#             */
-/*   Updated: 2023/10/10 20:29:28 by yachen           ###   ########.fr       */
+/*   Updated: 2023/10/11 13:37:13 by yachen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./includes/philosophers.h"
 
+/* Turn on dead_flag if the philo is timeout */
 static int	philo_timeout(t_philo *philo)
 {
 	pthread_mutex_lock(philo->meal_lock);
@@ -28,6 +29,7 @@ static int	philo_timeout(t_philo *philo)
 	return (0);
 }
 
+/* Check if any philo is timeout */
 static int	check_any_timeout(t_philo *philo)
 {
 	int	i;
@@ -44,6 +46,7 @@ static int	check_any_timeout(t_philo *philo)
 	return (0);
 }
 
+/* Check if the philo eat enough times */
 static int	philo_eat_enough(t_philo *philo)
 {
 
@@ -58,6 +61,7 @@ static int	philo_eat_enough(t_philo *philo)
 	return (0);
 }
 
+/* Check if all philo eat enough times */
 static int	check_all_eatenough(t_philo *philo)
 {
 	int	i;
@@ -83,6 +87,7 @@ static int	check_all_eatenough(t_philo *philo)
 	return (0);
 }
 
+/* Monitor keep running until a philo is dead */
 void	run_monitor(t_pgm *pgm)
 {
 	while (1)
@@ -90,5 +95,6 @@ void	run_monitor(t_pgm *pgm)
 		if ((check_any_timeout(pgm->philos) == 1)
 			|| (check_all_eatenough(pgm->philos) == 1))
 			return ;
+		usleep(200);
 	}
 }

@@ -6,12 +6,14 @@
 /*   By: yachen <yachen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/26 14:15:56 by yachen            #+#    #+#             */
-/*   Updated: 2023/10/10 20:21:47 by yachen           ###   ########.fr       */
+/*   Updated: 2023/10/11 18:05:37 by yachen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./includes/philosophers.h"
 
+
+/* Forks initialization */
 static int	init_fork(int nb_philo, pthread_mutex_t **fork)
 {
 	int	i;
@@ -25,10 +27,13 @@ static int	init_fork(int nb_philo, pthread_mutex_t **fork)
 	while (i < nb_philo)
 	{
 		err = pthread_mutex_init(&(*fork)[i], NULL);
-		if (err != 0 && i != 0)
+		if (err != 0)
 		{
-			while (--i >= 0)
-				pthread_mutex_destroy(&(*fork)[i]);
+			if (i != 0)
+			{
+				while (--i >= 0)
+					pthread_mutex_destroy(&(*fork)[i]);
+			}
 			return (-1);
 		}
 		i++;
@@ -36,12 +41,12 @@ static int	init_fork(int nb_philo, pthread_mutex_t **fork)
 	return (0);
 }
 
+/* pgm initialization */
 static int	init_pgm(t_pgm *pgm)
 {
 	pgm->dead_flag = 0;
 	if (pthread_mutex_init(&pgm->write_lock, NULL) != 0)
 		return (-1);
-	//if (init_fork(&pgm->meal_lock, nb_philo) == -1)
 	if (pthread_mutex_init(&pgm->meal_lock, NULL) != 0)
 	{
 		pthread_mutex_destroy(&pgm->write_lock);
@@ -50,7 +55,6 @@ static int	init_pgm(t_pgm *pgm)
 	if (pthread_mutex_init(&pgm->dead_lock, NULL) != 0)
 	{
 		pthread_mutex_destroy(&pgm->write_lock);
-	//	clean_forks(&pgm->meal_lock, nb_philo);
 		pthread_mutex_destroy(&pgm->meal_lock);
 		return (-1);
 	}
@@ -59,6 +63,7 @@ static int	init_pgm(t_pgm *pgm)
 	return (0);
 }
 
+/* Philos sub_initialization */
 static void	init_2(char **av, t_philo *philo, t_pgm *pgm)
 {
 	philo->thread = 0;
@@ -82,6 +87,7 @@ static void	init_2(char **av, t_philo *philo, t_pgm *pgm)
 	philo->dead_lock = &pgm->dead_lock;
 }
 
+/* Philos initialization */
 int	init_1(char **av, t_philo **philo, t_pgm *pgm, pthread_mutex_t **fork)
 {
 	int	i;
@@ -96,11 +102,21 @@ int	init_1(char **av, t_philo **philo, t_pgm *pgm, pthread_mutex_t **fork)
 	{
 		init_2(av, (*philo) + i, pgm);
 		(*philo)[i].id = i + 1;
-		(*philo)[i].r_fork = &(*fork)[i];
 		if (i == nb_philo - 1)
+		{
+			(*philo)[i].r_fork = &(*fork)[i];
 			(*philo)[i].l_fork = &(*fork)[0];
-		else
+		}
+		else if (((i != nb_philo - 1) && ((i + 1) % 2 == 0)) || (i == 0))
+		{
+			(*philo)[i].r_fork = &(*fork)[i];
 			(*philo)[i].l_fork = &(*fork)[i + 1];
+		}
+		else if ((i != nb_philo - 1) && ((i + 1) % 2 != 0))
+		{
+			(*philo)[i].r_fork = &(*fork)[i + 1];
+			(*philo)[i].l_fork = &(*fork)[i];
+		}
 		i++;
 	}
 	return (0);
@@ -121,7 +137,6 @@ int	init_all(char **av, pthread_mutex_t **fork, t_philo **ph, t_pgm *pgm)
 	if (init_1(av, ph, pgm, fork) == -1)
 	{
 		clean_forks(fork, nb_philo);
-	//	clean_forks(&pgm->meal_lock, nb_philo);
 		pthread_mutex_destroy(&pgm->write_lock);
 		pthread_mutex_destroy(&pgm->meal_lock);
 		pthread_mutex_destroy(&pgm->dead_lock);

@@ -6,12 +6,13 @@
 /*   By: yachen <yachen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/25 11:31:45 by yachen            #+#    #+#             */
-/*   Updated: 2023/10/10 20:32:18 by yachen           ###   ########.fr       */
+/*   Updated: 2023/10/11 12:13:19 by yachen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./includes/philosophers.h"
 
+/* Create all threads */
 int	create_thread(t_philo *philo, int *i)
 {
 	while (*i < philo[0].nb_of_philos)

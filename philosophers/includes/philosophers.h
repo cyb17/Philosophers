@@ -6,7 +6,7 @@
 /*   By: yachen <yachen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/19 13:37:00 by yachen            #+#    #+#             */
-/*   Updated: 2023/10/10 20:30:33 by yachen           ###   ########.fr       */
+/*   Updated: 2023/10/11 11:06:52 by yachen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ int		init_1(char **av, t_philo **philo, t_pgm *pgm, pthread_mutex_t **fork);
 int		init_all(char **av, pthread_mutex_t **fork, t_philo **ph, t_pgm *pgm);
 
 // utils1
-int		philo_ft_atoi(char *str);
+long	philo_ft_atoi(char *str);
 void	clean_forks(pthread_mutex_t **fork, int nb_fork);
 void	clean_all(t_pgm *pgm);
 size_t	get_current_time(void);

@@ -6,12 +6,13 @@
 /*   By: yachen <yachen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/13 14:17:49 by yachen            #+#    #+#             */
-/*   Updated: 2023/10/02 15:01:29 by yachen           ###   ########.fr       */
+/*   Updated: 2023/10/11 12:06:43 by yachen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./includes/philosophers.h"
 
+/* Check if all arguments are numbers */
 static int	check_digit(char **argv)
 {
 	int	i;
@@ -37,10 +38,13 @@ static int	check_digit(char **argv)
 	return (0);
 }
 
+/* Check if all numbers are corrects and logicals*/
 static int	check_number(char **argv)
 {
 	if (philo_ft_atoi(argv[1]) == 0 || philo_ft_atoi(argv[2]) == 0
 		|| philo_ft_atoi(argv[3]) == 0 || philo_ft_atoi(argv[4]) == 0)
+		return (-1);
+	if (argv[5] != NULL && philo_ft_atoi(argv[5]) > 2147483647)
 		return (-1);
 	return (0);
 }
