@@ -6,7 +6,7 @@
 /*   By: yachen <yachen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/07 17:18:59 by yachen            #+#    #+#             */
-/*   Updated: 2023/10/11 13:37:13 by yachen           ###   ########.fr       */
+/*   Updated: 2023/10/13 09:59:28 by yachen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ static int	philo_eat_enough(t_philo *philo)
 {
 
 	pthread_mutex_lock(philo->meal_lock);
-	if (philo->nb_times_to_eat != 0
+	if (philo->nb_times_to_eat != -1
 		&& philo->meals_eaten >= philo->nb_times_to_eat) 
 	{
 		pthread_mutex_unlock(philo->meal_lock);

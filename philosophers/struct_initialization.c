@@ -6,7 +6,7 @@
 /*   By: yachen <yachen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/26 14:15:56 by yachen            #+#    #+#             */
-/*   Updated: 2023/10/11 18:05:37 by yachen           ###   ########.fr       */
+/*   Updated: 2023/10/13 13:46:58 by yachen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,8 +76,8 @@ static void	init_2(char **av, t_philo *philo, t_pgm *pgm)
 	philo->time_to_eat = philo_ft_atoi(av[3]);
 	philo->time_to_sleep = philo_ft_atoi(av[4]);
 	philo->nb_of_philos = philo_ft_atoi(av[1]);
-	philo->nb_times_to_eat = 0;
-	if (av[5] != NULL && philo_ft_atoi(av[5]) != 0)
+	philo->nb_times_to_eat = -1;
+	if (av[5] != NULL)
 		philo->nb_times_to_eat = philo_ft_atoi(av[5]);
 	philo->dead = &pgm->dead_flag;
 	philo->r_fork = NULL;
@@ -102,21 +102,30 @@ int	init_1(char **av, t_philo **philo, t_pgm *pgm, pthread_mutex_t **fork)
 	{
 		init_2(av, (*philo) + i, pgm);
 		(*philo)[i].id = i + 1;
+	/*	(*philo)[i].r_fork = &(*fork)[i];
+		(*philo)[i].l_fork = &(*fork)[i + 1];
 		if (i == nb_philo - 1)
+			(*philo)[i].l_fork = &(*fork)[0];*/
+		if (i != 0)
+			(*philo)[i].r_fork = &(*fork)[i - 1];
+		else
+			(*philo)[i].r_fork = &(*fork)[nb_philo - 1];
+		(*philo)[i].l_fork = &(*fork)[i];
+		/*if (i == nb_philo - 1)
 		{
 			(*philo)[i].r_fork = &(*fork)[i];
 			(*philo)[i].l_fork = &(*fork)[0];
 		}
-		else if (((i != nb_philo - 1) && ((i + 1) % 2 == 0)) || (i == 0))
+		else if ((i + 1) % 2 == 0)
 		{
 			(*philo)[i].r_fork = &(*fork)[i];
 			(*philo)[i].l_fork = &(*fork)[i + 1];
 		}
-		else if ((i != nb_philo - 1) && ((i + 1) % 2 != 0))
+		else if ((i + 1) % 2 != 0)
 		{
 			(*philo)[i].r_fork = &(*fork)[i + 1];
 			(*philo)[i].l_fork = &(*fork)[i];
-		}
+		}*/
 		i++;
 	}
 	return (0);

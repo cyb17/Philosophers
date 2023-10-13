@@ -6,7 +6,7 @@
 /*   By: yachen <yachen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/07 17:19:57 by yachen            #+#    #+#             */
-/*   Updated: 2023/10/11 17:58:31 by yachen           ###   ########.fr       */
+/*   Updated: 2023/10/13 13:46:48 by yachen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,14 +88,11 @@ void	*routine(void *arg)
 	t_philo	*philo;
 
 	philo = (t_philo *)arg;
-
-	if (philo->nb_of_philos % 2 != 0 && philo->id == philo->nb_of_philos)
-		ft_usleep(1);
 	if (philo->id % 2 == 0)
-		ft_usleep(2);
+		ft_usleep(1);
 	while (check_dead_flag(philo) == 0)
 	{
-		if (philo->id == 1 && philo->nb_of_philos == 1)
+		if (philo->nb_of_philos == 1 && philo->id == 1)
 		{
 			pthread_mutex_lock(philo->r_fork);
 			print_msg(philo, 'f');
@@ -103,10 +100,11 @@ void	*routine(void *arg)
 			return (NULL);
 		}
 		if (ft_eat(philo) == 1)
-			break ;
+			return (NULL); 
 		if (ft_sleep(philo) == 1)
-			break ;
+			return (NULL);
 		ft_think(philo);
 	}
 	return (NULL);
 }
+
