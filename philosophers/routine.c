@@ -6,7 +6,7 @@
 /*   By: yachen <yachen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/07 17:19:57 by yachen            #+#    #+#             */
-/*   Updated: 2023/10/13 13:46:48 by yachen           ###   ########.fr       */
+/*   Updated: 2023/10/14 14:08:32 by yachen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,13 +55,13 @@ static int	ft_eat(t_philo *philo)
 	pthread_mutex_unlock(philo->meal_lock);
 	if (action_time(philo, philo->time_to_eat) == 1)
 	{
-		pthread_mutex_unlock(philo->l_fork);
 		pthread_mutex_unlock(philo->r_fork);
+		pthread_mutex_unlock(philo->l_fork);
 		return (1);
 	}
 	philo->eating = 0;
-	pthread_mutex_unlock(philo->l_fork);
 	pthread_mutex_unlock(philo->r_fork);
+	pthread_mutex_unlock(philo->l_fork);
 	return (0);
 }
 
@@ -76,6 +76,19 @@ static int	ft_sleep(t_philo *philo)
 static void	ft_think(t_philo *philo)
 {
 	print_msg(philo,'t');
+	usleep(1);
+/*	if (philo->id % 2 != 0 && philo->id != philo->nb_of_philos)
+		ft_usleep(philo->time_to_eat);
+	else if (philo->id % 2 == 0)
+	{
+		ft_usleep(philo->time_to_eat * 2);
+		usleep(1);
+	}
+	else
+	{
+		ft_usleep(philo->time_to_eat * 2);
+		usleep(1);
+	}*/
 }
 
 /* Odd start their routine first, and then even start theirs,
@@ -88,8 +101,13 @@ void	*routine(void *arg)
 	t_philo	*philo;
 
 	philo = (t_philo *)arg;
+	/*if (philo->nb_of_philos % 2 != 0 && philo->id == philo->nb_of_philos)
+	{
+		ft_usleep(philo->time_to_eat * 2);
+		usleep(1);
+	}*/
 	if (philo->id % 2 == 0)
-		ft_usleep(1);
+		usleep(1);
 	while (check_dead_flag(philo) == 0)
 	{
 		if (philo->nb_of_philos == 1 && philo->id == 1)
