@@ -6,12 +6,11 @@
 /*   By: yachen <yachen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/26 14:15:56 by yachen            #+#    #+#             */
-/*   Updated: 2023/10/14 13:54:32 by yachen           ###   ########.fr       */
+/*   Updated: 2023/10/17 15:41:16 by yachen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "./includes/philosophers.h"
-
+#include "../includes/philosophers.h"
 
 /* Forks initialization */
 static int	init_fork(int nb_philo, pthread_mutex_t **fork)
@@ -102,15 +101,6 @@ int	init_1(char **av, t_philo **philo, t_pgm *pgm, pthread_mutex_t **fork)
 	{
 		init_2(av, (*philo) + i, pgm);
 		(*philo)[i].id = i + 1;
-/*		(*philo)[i].r_fork = &(*fork)[i];
-		(*philo)[i].l_fork = &(*fork)[i + 1];
-		if (i == nb_philo - 1)
-			(*philo)[i].l_fork = &(*fork)[0];
-*//*		if (i != 0)
-			(*philo)[i].r_fork = &(*fork)[i - 1];
-		else
-			(*philo)[i].r_fork = &(*fork)[nb_philo - 1];
-		(*philo)[i].l_fork = &(*fork)[i];*/
 		if ((*philo)[i].id % 2 == 0)
 		{
 			(*philo)[i].r_fork = &(*fork)[i];

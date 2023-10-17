@@ -6,11 +6,11 @@
 /*   By: yachen <yachen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/13 14:13:35 by yachen            #+#    #+#             */
-/*   Updated: 2023/10/11 12:36:58 by yachen           ###   ########.fr       */
+/*   Updated: 2023/10/17 15:41:16 by yachen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include  "./includes/philosophers.h"
+#include  "../includes/philosophers.h"
 
 long	philo_ft_atoi(char *str)
 {

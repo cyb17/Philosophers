@@ -6,11 +6,11 @@
 /*   By: yachen <yachen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/07 17:18:59 by yachen            #+#    #+#             */
-/*   Updated: 2023/10/13 09:59:28 by yachen           ###   ########.fr       */
+/*   Updated: 2023/10/17 15:41:16 by yachen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "./includes/philosophers.h"
+#include "../includes/philosophers.h"
 
 /* Turn on dead_flag if the philo is timeout */
 static int	philo_timeout(t_philo *philo)
@@ -49,10 +49,9 @@ static int	check_any_timeout(t_philo *philo)
 /* Check if the philo eat enough times */
 static int	philo_eat_enough(t_philo *philo)
 {
-
 	pthread_mutex_lock(philo->meal_lock);
 	if (philo->nb_times_to_eat != -1
-		&& philo->meals_eaten >= philo->nb_times_to_eat) 
+		&& philo->meals_eaten >= philo->nb_times_to_eat)
 	{
 		pthread_mutex_unlock(philo->meal_lock);
 		return (1);
@@ -95,6 +94,6 @@ void	run_monitor(t_pgm *pgm)
 		if ((check_any_timeout(pgm->philos) == 1)
 			|| (check_all_eatenough(pgm->philos) == 1))
 			return ;
-		usleep(200);
+		usleep(50);
 	}
 }

@@ -6,11 +6,11 @@
 /*   By: yachen <yachen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/25 11:31:45 by yachen            #+#    #+#             */
-/*   Updated: 2023/10/13 12:08:06 by yachen           ###   ########.fr       */
+/*   Updated: 2023/10/17 15:41:16 by yachen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "./includes/philosophers.h"
+#include "../includes/philosophers.h"
 
 /* Create all threads */
 int	create_thread(t_philo *philo, int *i)

@@ -6,11 +6,11 @@
 /*   By: yachen <yachen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/13 14:17:49 by yachen            #+#    #+#             */
-/*   Updated: 2023/10/13 11:16:57 by yachen           ###   ########.fr       */
+/*   Updated: 2023/10/17 15:42:14 by yachen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "./includes/philosophers.h"
+#include "../includes/philosophers.h"
 
 /* Check if all arguments are numbers */
 static int	check_digit(char **argv)
@@ -59,6 +59,11 @@ int	arguments_parsing(int argc, char **argv)
 	else if (check_digit(argv) == -1 || check_number(argv) == -1)
 	{
 		printf("One of the arguments is not a correct positive number\n");
+		return (-1);
+	}
+	else if (philo_ft_atoi(argv[1]) > PHILO_MAX)
+	{
+		printf("Do not test more than 200 philos\n");
 		return (-1);
 	}
 	return (0);

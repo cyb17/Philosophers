@@ -6,14 +6,14 @@
 /*   By: yachen <yachen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/02 11:20:16 by yachen            #+#    #+#             */
-/*   Updated: 2023/10/14 13:30:08 by yachen           ###   ########.fr       */
+/*   Updated: 2023/10/17 15:41:16 by yachen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "./includes/philosophers.h"
+#include "../includes/philosophers.h"
 
 /* Write nothing if a philo is dead */
-void	print_msg(t_philo *philo, char indice)
+/*void	print_msg(t_philo *philo, char indice)
 {
 	size_t	timestamp;
 
@@ -38,10 +38,10 @@ void	print_msg(t_philo *philo, char indice)
 	else if (indice == 'F')
 		printf("%sall philosophers have eaten enough%s\n", CYN, DEF);
 	pthread_mutex_unlock(philo->write_lock);
-}
+}*/
 
 /* Version without text color for phisolophers's tester */
-/*void	print_msg(t_philo *philo, char indice)
+void	print_msg(t_philo *philo, char indice)
 {
 	size_t	timestamp;
 
@@ -66,4 +66,4 @@ void	print_msg(t_philo *philo, char indice)
 	else if (indice == 'F')
 		printf("all philosophers have eaten enough\n");
 	pthread_mutex_unlock(philo->write_lock);
-}*/
+}

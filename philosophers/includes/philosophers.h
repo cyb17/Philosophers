@@ -6,7 +6,7 @@
 /*   By: yachen <yachen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/19 13:37:00 by yachen            #+#    #+#             */
-/*   Updated: 2023/10/11 11:06:52 by yachen           ###   ########.fr       */
+/*   Updated: 2023/10/17 15:38:10 by yachen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,8 @@
 # define CYN "\e[96m"
 # define CYN_F "\e[36;1m"
 # define MAA "\e[95;1m"
+
+# define PHILO_MAX 200
 
 typedef struct s_philo
 {
