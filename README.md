@@ -12,19 +12,19 @@ A project to learn the basics of threading a process: **threads** and **mutexes*
 You will then get an executable program named philo. This program takes the following arguments:
 
 ```
-number_of_philosophers time_to_die time_to_eat time_to_sleep
+./philo number_of_philosophers time_to_die time_to_eat time_to_sleep
 [number_of_times_each_philosopher_must_eat]
 ```
 
-number_of_philosophers: Number of philosophers (max 200).
+ **number_of_philosophers**: Number of philosophers (max 200).
 
-time_to_die (in ms): Maximum time a philosopher can survive without eating.
+ **time_to_die (in ms)**: Maximum time a philosopher can survive without eating.
 
-time_to_eat (in ms): Time required for a philosopher to eat.
+ **time_to_eat (in ms)**: Time required for a philosopher to eat.
 
-time_to_sleep (in ms): Time a philosopher spends sleeping.
+ **time_to_sleep (in ms)**: Time a philosopher spends sleeping.
 
-number_of_times_each_philosopher_must_eat (optional): If specified, the simulation stops when each philosopher has eaten at least this number of times.
+ **number_of_times_each_philosopher_must_eat (optional)**: If specified, the    simulation stops when each philosopher has eaten at least this number of times.
 
 Example:
 
