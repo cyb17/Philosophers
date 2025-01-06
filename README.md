@@ -29,9 +29,10 @@ You will then get an executable program named philo. This program takes the foll
 Example:
 
 ```
-./philo 5 800 200 200
-./philo 5 800 200 200 7
+./philo 5 800 200 200 1
 ```
+the program will stop when each philosopher has eaten at least 1 time.
+
 Output:
 
 ```
