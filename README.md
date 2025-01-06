@@ -5,11 +5,9 @@ A project to learn the basics of threading a process: **threads** and **mutexes*
 
 ### How to use it
 
-Clone the repository in your terminal.
-
-Navigate to the philo repository.
-
-Run make.
+  * Clone the repository in your terminal.
+  * Navigate to the philo repository.
+  * Run make.
 
 You will then get an executable program named philo. This program takes the following arguments:
 
